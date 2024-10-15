@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import DateRangePicker from './components/DateRangePicker';
 
 function App() {
+
   const handleDateRangeChange = (
     dateRange: [string, string] | null, 
     weekends: string[]
