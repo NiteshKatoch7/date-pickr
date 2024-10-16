@@ -21,6 +21,7 @@ interface DateRangePickerProps {
 
 const DateRangePicker: React.FC<DateRangePickerProps> =  ({ onDateRangeChange, predefinedRanges = [] }) => {
   const [dateRange, setDateRange] = useState<DateRange>({ startDate: null, endDate: null });
+  const [weekends, setWeekends] = useState<string[]>([]);
 
   const currentDate = new Date();
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
@@ -60,10 +61,12 @@ const DateRangePicker: React.FC<DateRangePickerProps> =  ({ onDateRangeChange, p
         formatDate(dateRange.endDate)
       ];
       console.log(dateRange.startDate, dateRange.endDate);
-      const weekends = getWeekendDates(dateRange.startDate, dateRange.endDate);
-      onDateRangeChange(formattedRange, weekends);
+      const weekendDates = getWeekendDates(dateRange.startDate, dateRange.endDate);
+      setWeekends(weekendDates);
+      onDateRangeChange(formattedRange, weekendDates);
     } else {
       onDateRangeChange(null, []);
+      setWeekends([]);
     }
   }, [dateRange, onDateRangeChange]);
 
@@ -215,6 +218,24 @@ const DateRangePicker: React.FC<DateRangePickerProps> =  ({ onDateRangeChange, p
           ))}
         </PredefinedRangesWrapper>
       </PredefinedRangesComponent>
+      <ResultsPopover>
+        <h4>Selected Date Range</h4>
+        {dateRange.startDate && dateRange.endDate ? (
+          <>
+            <p>
+              [<span>{formatDate(dateRange.startDate)}</span> - <span>{formatDate(dateRange.endDate)}</span>]
+            </p>
+            <h5>Weekends:</h5>
+            <ul>
+              {weekends.map((date, index) => (
+                <li key={index}>{date}</li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p>No date range selected</p>
+        )}
+      </ResultsPopover>
     </DateRangeComponent>
   )
 }
@@ -383,6 +404,44 @@ const PredefinedRangeButton = styled.button`
   &.active{
     background-color: #FF5634;
     color: #fff;
+  }
+`;
+
+const ResultsPopover = styled.div`
+  position: fixed;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  padding: 2rem 1rem;
+  border-radius: 24px;
+
+  h4{
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  span{
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 340px;
+    overflow: auto;
+
+    &::-webkit-scrollbar{
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb{
+      width: 4px;
+      border-radius: 8px;
+      background-color: rgba(0,0,0,0.2);
+    }
   }
 `;
 
