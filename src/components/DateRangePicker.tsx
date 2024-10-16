@@ -415,6 +415,7 @@ const ResultsPopover = styled.div`
   background-color: #fff;
   padding: 2rem 1rem;
   border-radius: 24px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
   h4{
     font-size: 24px;
